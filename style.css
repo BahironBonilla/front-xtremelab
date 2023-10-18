@@ -1,0 +1,39 @@
+* {
+    margin: 2;
+    padding: 1;
+    box-sizing: border-box;
+    margin: auto;
+    border-radius: 5px;
+
+}
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background-image: url('wall3.jpg');
+    background-size: cover;
+}
+.container {
+    text-align: center;
+    margin-top: 50px;
+    background-color: rgba(255, 255, 255, 0.37);
+    width: 70%;
+    padding: 20px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+table {
+    background-color: rgba(255, 255, 255, 0.37);
+    border-radius: 5px;
+    border-color: bisque;
+    padding: 20px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}

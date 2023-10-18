@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Archivos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Subir Archivos</h1>
+        <input type="file" id="fileInput" accept=".jpg, .jpeg, .png" />
+        <button onclick="uploadFile()">Subir</button>
+        <div id="message"></div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div>
+        <table id="table" >
+            <tr>
+                <th>ID</th>
+                <th>Object Key</th>
+                <th>Object Description</th>
+            </tr>
+        </table>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
