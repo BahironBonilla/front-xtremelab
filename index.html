@@ -1,28 +1,141 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subir Archivos</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Cliente para la API de S3</title>
+    <style>
+        * {
+            margin: 2;
+            padding: 1;
+            box-sizing: border-box;
+            margin: auto;
+            border-radius: 5px;
+
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-image: url('wall3.jpg');
+            background-size: cover;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 50px;
+            background-color: rgba(255, 255, 255, 0.37);
+            width: 70%;
+            padding: 20px;
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        table {
+            background-color: rgba(255, 255, 255, 0.37);
+            border-radius: 5px;
+            border-color: bisque;
+            padding: 20px;
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Subir Archivos</h1>
-        <input type="file" id="fileInput" accept=".jpg, .jpeg, .png" />
-        <button onclick="uploadFile()">Subir</button>
-        <div id="message"></div>
+        <h2>Subir Archivo a S3</h2>
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()">Subir Archivo</button>
     </div>
-    <div style="height: 10px;"></div>
-    <div>
-        <table id="table" >
-            <tr>
-                <th>ID</th>
-                <th>Object Key</th>
-                <th>Object Description</th>
-            </tr>
-        </table>
+
+    <div class="container">
+        <h2>Listar Archivos en S3</h2>
+        <!--    
+        <button onclick="listFiles()">Listar Archivos</button>
+    -->
+        <ul id="fileList"></ul>
+
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        listFiles();
+        function uploadFile() {
+
+            const fileInput = document.getElementById('fileInput');
+            let fileName = ""; // Declarar fileName aquí
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                alert(`Nombre del archivo seleccionado: ${fileName}`);
+            }
+            // Nombre del archivo que deseas subir a S3
+            const key = fileName;
+            const file = fileInput.files[0];
+
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", fileInput.files[0]);
+
+                fetch("http://127.0.0.1:8000/upload/", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+
+                    })
+                    .catch(error => {
+                        alert("Error: " + error.message);
+                    });
+                listFiles();
+            }
+
+        }
+
+        async function listFiles() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/list/");
+                const data = await response.json();
+
+                const fileList = document.getElementById("fileList");
+                fileList.innerHTML = "";
+
+                data.files.forEach(file => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = file;
+                    fileList.appendChild(listItem);
+                });
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        function deleteFile() {
+            alert('brra');
+            const deleteFileName = document.getElementById("deleteFileName").value;
+
+            fetch(`http://127.0.0.1:8000/delete/${deleteFileName}`, {
+                method: "DELETE"
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    alert("Error: " + error.message);
+                });
+        }
+    </script>
 </body>
+
 </html>
