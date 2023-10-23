@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            background-image: url('wall3.jpg');
+            background-color: rgba(57, 156, 123, 0.637);
             background-size: cover;
         }
 
@@ -53,18 +53,21 @@
 
 <body>
     <div class="container">
-        <h2>Subir Archivo a S3</h2>
+        <h2>SUBIR A S3</h2>
         <input type="file" id="fileInput">
         <button onclick="uploadFile()">Subir Archivo</button>
     </div>
 
     <div class="container">
-        <h2>Listar Archivos en S3</h2>
-        <!--    
-        <button onclick="listFiles()">Listar Archivos</button>
-    -->
-        <ul id="fileList"></ul>
-
+        <h2>OBJETOS DE S3</h2>
+        <table id="fileTable">
+            <tr>
+                <th>Nombre</th>
+                <th>Tamaño</th>
+                <th>Ultima modificación</th>
+                <th>Link</th>
+            </tr>
+        </table>
     </div>
 
     <script>
@@ -75,7 +78,7 @@
             let fileName = ""; // Declarar fileName aquí
             if (fileInput.files.length > 0) {
                 const fileName = fileInput.files[0].name;
-                alert(`Nombre del archivo seleccionado: ${fileName}`);
+                //alert(`Nombre del archivo seleccionado: ${fileName}`);
             }
             // Nombre del archivo que deseas subir a S3
             const key = fileName;
@@ -102,23 +105,83 @@
 
         }
 
-        async function listFiles() {
-            try {
-                const response = await fetch("http://127.0.0.1:8000/list/");
-                const data = await response.json();
+//        async function listFiles() {
+//            try {
+//                const response = await fetch("http://127.0.0.1:8000/list/");
+//                const data = await response.json();
+//
+//                const fileList = document.getElementById("fileList");
+//                fileList.innerHTML = "";
+//
+//                data.files.forEach(file => {
+//                    const listItem = document.createElement("li");
+//                    listItem.textContent = file;
+//                    fileList.appendChild(listItem);
+//                });
+//            } catch (error) {
+//                alert("Error: " + error.message);
+//            }
+//        }
 
-                const fileList = document.getElementById("fileList");
-                fileList.innerHTML = "";
 
-                data.files.forEach(file => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = file;
-                    fileList.appendChild(listItem);
-                });
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        }
+async function listFiles() {
+    try {
+        const response = await fetch("http://127.0.0.1:8000/list/");
+        const data = await response.json();
+
+        const table = document.getElementById("fileTable");
+        table.innerHTML = "";
+
+        // Crear encabezados de tabla
+        const tableHeader = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        const headers = ["Nombre", "Tamaño", "Ultima Modificacion", "Link"];
+
+        headers.forEach(headerText => {
+            const header = document.createElement("th");
+            header.textContent = headerText;
+            headerRow.appendChild(header);
+        });
+
+        tableHeader.appendChild(headerRow);
+        table.appendChild(tableHeader);
+
+        // Llenar la tabla con datos
+        const tableBody = document.createElement("tbody");
+
+        data.files.forEach(file => {
+            const row = document.createElement("tr");
+            const keyCell = document.createElement("td");
+            keyCell.textContent = file.Key;
+            const sizeCell = document.createElement("td");
+            sizeCell.textContent = file.Size;
+            const lastModifiedCell = document.createElement("td");
+            lastModifiedCell.textContent = file.LastModified;
+            const downloadLinkCell = document.createElement("td");
+            const downloadLink = document.createElement("a");
+            downloadLink.href = file.DownloadLink;
+            downloadLink.textContent = "Descargar";
+            downloadLinkCell.appendChild(downloadLink);
+
+            row.appendChild(keyCell);
+            row.appendChild(sizeCell);
+            row.appendChild(lastModifiedCell);
+            row.appendChild(downloadLinkCell);
+
+            tableBody.appendChild(row);
+        });
+
+        table.appendChild(tableBody);
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
+
+
+
+
+
+//////////////////////////////////////////////////////
 
         function deleteFile() {
             alert('brra');
